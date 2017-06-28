@@ -1,0 +1,28 @@
+function doGet(e) {
+  //Check if we have parameters
+  if (e.queryString===null) return HtmlService.createHtmlOutput("Empty!"); else {
+    var params=e.parameter;
+    //If we do, define worksheet, such as:
+    //docs.google.com/spreadsheets/d/1qpyC0XzvTcKT6EISywvqESX3A0MwQoFDE8p-Bll4hps/edit#gid=0
+    var id="1qpyC0XzvTcKT6EISywvqESX3A0MwQoFDE8p-Bll4hps";
+    //Define sheet by name
+    var destinationSheetName="Sheet1";
+    var destinationSheet = SpreadsheetApp.openById(id).getSheetByName(destinationSheetName);
+    //Find last empty row
+    var row=getLastRow(destinationSheet,"A1:A")+1;
+    //Prepare parameters
+    var values=[[]];
+    values[0].push(new Date())
+    for (var i in e.parameters) {
+      values[0].push(i || "-",e.parameters[i][0] || "-");
+    }
+    //Write parameters to sheet
+    destinationSheet.getRange(row,1,1,values[0].length).setValues(values);
+    return HtmlService.createHtmlOutput("Succes!"); 
+}}
+  
+function getLastRow(sheet, column){
+    var values = sheet.getRange(column).getValues();
+    var row = values.filter(String).length;
+    return row;
+}
